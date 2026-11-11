@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Home as HomeIcon, Gamepad2, BookOpen, MessageCircle, Lock, Sun, Moon, Palette } from 'lucide-react';
+import { Home as HomeIcon, Gamepad2, BookOpen, MessageCircle, Lock, Sun, Moon, Palette, ArrowRight, Sparkles } from 'lucide-react';
 import { AssetsCtx, go, useAssets, useAssetsCtx, useRoute } from './hooks';
-import { GAMES, art } from './data';
+import { art } from './data';
 import Games from './Games';
 import Stories from './Stories';
 import Elder from './Elder';
@@ -58,13 +58,68 @@ function Home() {
           </div>
         </div>
       </section>
-      <section className="max-w-5xl mx-auto px-5 py-14 grid gap-5 sm:grid-cols-3">
-        {GAMES.filter(g => g.play).map(g => (
-          <button key={g.id} onClick={() => go(g.play!)} className="glass rounded-3xl overflow-hidden text-left">
-            <img src={assets.games[g.id] || art(...g.colors)} alt={g.name} className="h-40 w-full object-cover sepia" />
-            <div className="p-4"><h3 className="font-display text-xl">{g.name}</h3><p className="text-sm text-[var(--mute)] mt-1">{g.summary}</p><p className="text-sm mt-3 text-[var(--gold)] font-bold">Play now</p></div>
-          </button>
-        ))}
+      {/* Cultural Sanctuary Pillars */}
+      <section className="max-w-5xl mx-auto px-5 py-14 space-y-10">
+        <div className="grid gap-6 md:grid-cols-3">
+          <div className="glass rounded-3xl p-6 flex flex-col justify-between space-y-5">
+            <div className="space-y-3">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[var(--bg2)] text-[var(--gold)] border border-[var(--line)]">
+                <Gamepad2 size={24} />
+              </div>
+              <h3 className="font-display text-2xl">Courtyard Sanctuary</h3>
+              <p className="text-sm text-[var(--mute)] leading-relaxed">
+                Step into authentic Ghanaian play. From the mathematical foresight of Akan Oware to the clapping jumps of Ampe and the courtyard search of Pilolo.
+              </p>
+            </div>
+            <button className="btn btn-gold w-full justify-center text-sm" onClick={() => go('/games')}>
+              Explore Games Sanctuary <ArrowRight size={15} />
+            </button>
+          </div>
+
+          <div className="glass rounded-3xl p-6 flex flex-col justify-between space-y-5">
+            <div className="space-y-3">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[var(--bg2)] text-[var(--gold)] border border-[var(--line)]">
+                <BookOpen size={24} />
+              </div>
+              <h3 className="font-display text-2xl">Heritage Stories</h3>
+              <p className="text-sm text-[var(--mute)] leading-relaxed">
+                Delve into the oral histories, ancestral folklore, and compound evening traditions behind each game, recorded to preserve living cultural memory.
+              </p>
+            </div>
+            <button className="btn glass w-full justify-center text-sm" onClick={() => go('/stories')}>
+              Read Heritage Stories <ArrowRight size={15} />
+            </button>
+          </div>
+
+          <div className="glass rounded-3xl p-6 flex flex-col justify-between space-y-5">
+            <div className="space-y-3">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[var(--bg2)] text-[var(--gold)] border border-[var(--line)]">
+                <MessageCircle size={24} />
+              </div>
+              <h3 className="font-display text-2xl">Nana Kwame (Elder AI)</h3>
+              <p className="text-sm text-[var(--mute)] leading-relaxed">
+                Ask our virtual compound elder about proverb interpretations, historical etiquette, game rules, and traditional Ghanaian cultural philosophy.
+              </p>
+            </div>
+            <button className="btn glass w-full justify-center text-sm" onClick={() => go('/elder')}>
+              Consult the Elder <ArrowRight size={15} />
+            </button>
+          </div>
+        </div>
+
+        {/* Ancestral Proverb & Wisdom Banner */}
+        <div className="glass rounded-3xl p-8 sm:p-10 relative overflow-hidden text-center space-y-4 border border-[var(--gold)]">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-[var(--gold)] bg-[var(--bg2)] border border-[var(--line)]">
+            <Sparkles size={13} />
+            Akan Proverb · Traditional Wisdom
+          </div>
+          <blockquote className="font-display text-2xl sm:text-3xl max-w-2xl mx-auto leading-snug">
+            “Tikoro nkɔ agyina; nyansa nso nyɛ sika na wɔakyekyere asie.”
+          </blockquote>
+          <p className="text-sm text-[var(--mute)] max-w-xl mx-auto leading-relaxed">
+            “One head does not go into council; and wisdom is not like gold to be hoarded in secret — in our courtyards, games are where fellowship is woven and minds are sharpened together.”
+          </p>
+        </div>
       </section>
     </div>
   );
