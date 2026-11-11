@@ -18,9 +18,35 @@ function Home() {
   const hero = assets.hero || art('#2C261F', '#6b3b12');
   return (
     <div>
-      <section className="relative min-h-[78vh] flex items-end overflow-hidden">
-        <img src={hero} alt="" className="absolute inset-0 w-full h-full object-cover sepia" />
-        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,.35) 95%), linear-gradient(to top, rgba(0,0,0,.35), transparent 60%)' }} />
+      <section className="relative min-h-[82vh] flex items-end overflow-hidden">
+        {/* Background Image with theme-specific blend & filters */}
+        <img src={hero} alt="" className="hero-image absolute inset-0 w-full h-full" />
+
+        {/* Ambient Theme Color Glows matching the active theme palette */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              'radial-gradient(ellipse 60% 50% at 80% 25%, color-mix(in srgb, var(--orb1) 40%, transparent) 0%, transparent 70%), radial-gradient(ellipse 55% 45% at 20% 75%, color-mix(in srgb, var(--orb2) 35%, transparent) 0%, transparent 70%)',
+          }}
+        />
+
+        {/* Unified radial & vertical gradient overlay that blends seamlessly into var(--bg) */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              'radial-gradient(ellipse 85% 75% at 50% 30%, transparent 20%, color-mix(in srgb, var(--bg) 60%, transparent) 65%, var(--bg) 100%), linear-gradient(to bottom, color-mix(in srgb, var(--bg) 20%, transparent) 0%, color-mix(in srgb, var(--bg) 50%, transparent) 55%, var(--bg) 100%)',
+          }}
+        />
+
+        {/* Smooth bottom gradient fade to guarantee seamless transition to games section */}
+        <div
+          className="absolute inset-x-0 bottom-0 h-36 pointer-events-none"
+          style={{
+            background: 'linear-gradient(to bottom, transparent, var(--bg))',
+          }}
+        />
         <div className="relative max-w-5xl mx-auto px-5 pb-16 pt-32 w-full">
           <span className="glass inline-block rounded-full px-4 py-1.5 text-sm mb-5">🇬🇭 Akwaaba · Ghana Traditional Games</span>
           <h1 className="font-display text-4xl sm:text-6xl leading-[1.05] max-w-3xl">Play Ghana’s Soul. Ancient Rules. Living Courtyards.</h1>
