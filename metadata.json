@@ -3,5 +3,6 @@
   "description": "Interactive traditional Ghanaian games (Ampe, Chaskele, Pilolo), folklore stories, and cultural wisdom from the Elder.",
   "prompt": "Ghana traditional games and storytelling sanctuary",
   "permissions": [],
-  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

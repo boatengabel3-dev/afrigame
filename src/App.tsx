@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { Home as HomeIcon, Gamepad2, BookOpen, MessageCircle, Lock, Sun, Moon, Palette } from 'lucide-react';
 import { AssetsCtx, go, useAssets, useAssetsCtx, useRoute } from './hooks';
 import { art } from './data';
+import { LangProvider, useLang } from './i18n';
+import LanguageSwitcher from './components/LanguageSwitcher';
 import Games from './Games';
 import Stories from './Stories';
 import Elder from './Elder';
@@ -10,12 +12,24 @@ import Ampe from './games/Ampe';
 import Pilolo from './games/Pilolo';
 import Chaskele from './games/Chaskele';
 
-const THEMES = [['dark', 'Dark Heritage', Moon], ['ivory', 'Ivory Sun', Sun], ['kente', 'Royal Kente', Palette]] as const;
-const NAV = [['/', 'Home', HomeIcon], ['/games', 'Games', Gamepad2], ['/stories', 'Stories', BookOpen], ['/elder', 'Elder AI', MessageCircle]] as const;
+const THEMES = [
+  ['dark', 'Dark Heritage', Moon],
+  ['ivory', 'Ivory Sun', Sun],
+  ['kente', 'Royal Kente', Palette],
+] as const;
+
+const NAV = [
+  ['/', 'nav_home', HomeIcon],
+  ['/games', 'nav_games', Gamepad2],
+  ['/stories', 'nav_stories', BookOpen],
+  ['/elder', 'nav_elder', MessageCircle],
+] as const;
 
 function Home() {
   const { assets } = useAssetsCtx();
+  const { t } = useLang();
   const hero = assets.hero || art('#2C261F', '#6b3b12');
+
   return (
     <div>
       <section className="relative min-h-[82vh] flex items-end overflow-hidden">
@@ -47,14 +61,27 @@ function Home() {
             background: 'linear-gradient(to bottom, transparent, var(--bg))',
           }}
         />
-        <div className="relative max-w-5xl mx-auto px-5 pb-16 pt-32 w-full">
-          <span className="glass inline-block rounded-full px-4 py-1.5 text-sm mb-5">🇬🇭 Akwaaba · Ghana Traditional Games</span>
-          <h1 className="font-display text-4xl sm:text-6xl leading-[1.05] max-w-3xl">Play Ghana’s Soul. Ancient Rules. Living Courtyards.</h1>
-          <p className="mt-5 max-w-xl text-[var(--mute)]">A living archive of Oware, Ampe, Pilolo, Chaskele, Dame and Ludo, with games you can play, stories you can read and an elder you can ask.</p>
+
+        <div className="relative max-w-5xl mx-auto px-5 pb-20 pt-32 w-full">
+          <span className="glass inline-block rounded-full px-4 py-1.5 text-sm mb-5">
+            {t('hero_badge')}
+          </span>
+          <h1 className="font-display text-4xl sm:text-6xl leading-[1.05] max-w-3xl">
+            {t('hero_title')}
+          </h1>
+          <p className="mt-5 max-w-xl text-[var(--mute)]">
+            {t('hero_desc')}
+          </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <button className="btn btn-gold" onClick={() => go('/games')}>Explore Games Sanctuary</button>
-            <button className="btn glass" onClick={() => go('/stories')}>Listen to Heritage Stories</button>
-            <button className="btn glass" onClick={() => go('/elder')}>Consult Nana Kwame (AI)</button>
+            <button className="btn btn-gold" onClick={() => go('/games')}>
+              {t('btn_games')}
+            </button>
+            <button className="btn glass" onClick={() => go('/stories')}>
+              {t('btn_stories')}
+            </button>
+            <button className="btn glass" onClick={() => go('/elder')}>
+              {t('btn_elder')}
+            </button>
           </div>
         </div>
       </section>
@@ -62,15 +89,27 @@ function Home() {
   );
 }
 
-export default function App() {
+function AppContent() {
   const route = useRoute();
   const a = useAssets();
+  const { t } = useLang();
   const [theme, setTheme] = useState(() => localStorage.getItem('gg-theme') || 'dark');
   const [loading, setLoading] = useState(true);
-  useEffect(() => { document.documentElement.dataset.theme = theme; localStorage.setItem('gg-theme', theme); }, [theme]);
-  useEffect(() => { setLoading(true); window.scrollTo(0, 0); const t = setTimeout(() => setLoading(false), 450); return () => clearTimeout(t); }, [route]);
-  const [, label, Icon] = THEMES.find(t => t[0] === theme) || THEMES[0];
-  const next = () => setTheme(THEMES[(THEMES.findIndex(t => t[0] === theme) + 1) % 3][0]);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem('gg-theme', theme);
+  }, [theme]);
+
+  useEffect(() => {
+    setLoading(true);
+    window.scrollTo(0, 0);
+    const tTimer = setTimeout(() => setLoading(false), 450);
+    return () => clearTimeout(tTimer);
+  }, [route]);
+
+  const [, label, Icon] = THEMES.find(th => th[0] === theme) || THEMES[0];
+  const next = () => setTheme(THEMES[(THEMES.findIndex(th => th[0] === theme) + 1) % 3][0]);
 
   let page = <Home />;
   if (route === '/games') page = <Games />;
@@ -84,28 +123,84 @@ export default function App() {
   return (
     <AssetsCtx.Provider value={a}>
       <div className="kente" />
+      {/* Desktop Header */}
       <header className="glass sticky top-0 z-40 hidden md:block">
         <div className="max-w-5xl mx-auto px-5 h-16 flex items-center justify-between">
-          <button onClick={() => go('/')} className="font-display text-xl text-[var(--gold)]">Ghana Games</button>
-          <nav className="flex items-center gap-1">
-            {NAV.map(([p, n]) => <button key={p} onClick={() => go(p)} className="btn border-transparent" aria-current={route === p ? 'page' : undefined} style={route === p ? { color: 'var(--gold)' } : {}}>{n}</button>)}
-            <button className="btn" onClick={next} title="Switch theme"><Icon size={16} />{label}</button>
+          <button onClick={() => go('/')} className="font-display text-xl text-[var(--gold)]">
+            {t('app_name')}
+          </button>
+          <nav className="flex items-center gap-2">
+            {NAV.map(([p, transKey]) => (
+              <button
+                key={p}
+                onClick={() => go(p)}
+                className="btn border-transparent"
+                aria-current={route === p ? 'page' : undefined}
+                style={route === p ? { color: 'var(--gold)' } : {}}
+              >
+                {t(transKey)}
+              </button>
+            ))}
+            <LanguageSwitcher />
+            <button className="btn" onClick={next} title={t('switch_theme')}>
+              <Icon size={16} />
+              {label}
+            </button>
           </nav>
         </div>
       </header>
+
+      {/* Mobile Header */}
       <header className="md:hidden flex items-center justify-between px-5 h-14">
-        <span className="font-display text-lg text-[var(--gold)]">Ghana Games</span>
-        <button className="btn" onClick={next} aria-label="Switch theme"><Icon size={16} /></button>
+        <span className="font-display text-lg text-[var(--gold)]">{t('app_name')}</span>
+        <div className="flex items-center gap-1.5">
+          <LanguageSwitcher compact />
+          <button className="btn p-2" onClick={next} aria-label={t('switch_theme')}>
+            <Icon size={16} />
+          </button>
+        </div>
       </header>
+
       <main className="pb-28 md:pb-10 min-h-[80vh]">{page}</main>
+
       <footer className="text-center text-sm text-[var(--mute)] pb-24 md:pb-8 flex items-center justify-center gap-3">
-        <span>Ghana Games · preserving play</span>
-        <button onClick={() => go('/admin')} aria-label="Curator console" className="p-2"><Lock size={14} /></button>
+        <span>{t('footer_text')}</span>
+        <button onClick={() => go('/admin')} aria-label="Curator console" className="p-2">
+          <Lock size={14} />
+        </button>
       </footer>
+
+      {/* Mobile Bottom Navigation */}
       <nav className="md:hidden fixed bottom-3 inset-x-3 z-40 glass rounded-3xl grid grid-cols-4">
-        {NAV.map(([p, n, I]) => <button key={p} onClick={() => go(p)} className="py-3 flex flex-col items-center text-xs gap-1 min-h-[56px]" style={route === p ? { color: 'var(--gold)' } : {}}><I size={20} />{n}</button>)}
+        {NAV.map(([p, transKey, I]) => (
+          <button
+            key={p}
+            onClick={() => go(p)}
+            className="py-3 flex flex-col items-center text-xs gap-1 min-h-[56px]"
+            style={route === p ? { color: 'var(--gold)' } : {}}
+          >
+            <I size={20} />
+            {t(transKey)}
+          </button>
+        ))}
       </nav>
-      {loading && <div className="fixed inset-0 z-50 grid place-items-center" style={{ background: 'rgba(0,0,0,.35)', backdropFilter: 'blur(30px)' }}><div className="emblem" role="status" aria-label="Loading" /></div>}
+
+      {loading && (
+        <div
+          className="fixed inset-0 z-50 grid place-items-center"
+          style={{ background: 'rgba(0,0,0,.35)', backdropFilter: 'blur(30px)' }}
+        >
+          <div className="emblem" role="status" aria-label="Loading" />
+        </div>
+      )}
     </AssetsCtx.Provider>
+  );
+}
+
+export default function App() {
+  return (
+    <LangProvider>
+      <AppContent />
+    </LangProvider>
   );
 }

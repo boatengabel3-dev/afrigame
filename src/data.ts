@@ -77,3 +77,5 @@ export function elderFallback(q: string) {
   const hit = FALLBACK.find(f => f.k.some(k => s.includes(k)));
   return hit ? hit.a : 'Akwaaba, my child. Ask me about Oware, Ampe, Pilolo, Chaskele, Dame or Ludo, and I will share what I know of the old courtyards.';
 }
+
+export { getLocalizedGame } from './gamesI18n';

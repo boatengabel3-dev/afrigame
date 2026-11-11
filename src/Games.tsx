@@ -1,11 +1,20 @@
 import { useState, Fragment } from 'react';
 import { X } from 'lucide-react';
-import { GAMES, Game, art } from './data';
+import { GAMES, Game, art, getLocalizedGame } from './data';
 import { go, useAssetsCtx } from './hooks';
+import { useLang } from './i18n';
 
-const CATS = ['All Games', 'Board & Strategy', 'Active & Rhythm', 'Children Courtyard'];
+const CAT_KEYS = [
+  { id: 'All Games', key: 'cat_all' },
+  { id: 'Board & Strategy', key: 'cat_board' },
+  { id: 'Active & Rhythm', key: 'cat_active' },
+  { id: 'Children Courtyard', key: 'cat_courtyard' },
+];
 
-function Modal({ g, img, onClose }: { g: Game; img: string; onClose: () => void }) {
+function Modal({ rawGame, img, onClose }: { rawGame: Game; img: string; onClose: () => void }) {
+  const { t, lang } = useLang();
+  const g = getLocalizedGame(rawGame, lang);
+
   return (
     <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-md overflow-y-auto" onClick={onClose}>
       <div className="glass rounded-3xl max-w-2xl mx-auto my-6 overflow-hidden" onClick={e => e.stopPropagation()} role="dialog" aria-label={g.name}>
@@ -17,13 +26,42 @@ function Modal({ g, img, onClose }: { g: Game; img: string; onClose: () => void 
         <div className="p-6 space-y-5">
           <h2 className="font-display text-3xl">{g.name}</h2>
           <div className="flex flex-wrap gap-2 text-sm">
-            <span className="pill">Origin: {g.origin}</span><span className="pill">Format: {g.format}</span><span className="pill">Mastery: {g.level}</span>
+            <span className="pill">{t('origin_label')}: {g.origin}</span>
+            <span className="pill">{t('format_label')}: {g.format}</span>
+            <span className="pill">{t('mastery_label')}: {g.level}</span>
           </div>
-          <section><h3 className="font-bold mb-2">Rules of play</h3><ol className="list-decimal pl-5 space-y-1 text-[var(--mute)]">{g.rules.map((r, i) => <li key={i}>{r}</li>)}</ol></section>
-          <section><h3 className="font-bold mb-2">History and oral tradition</h3><p className="text-[var(--mute)]">{g.history}</p></section>
-          <section><h3 className="font-bold mb-2">Equipment</h3><ul className="list-disc pl-5 text-[var(--mute)]">{g.equipment.map(e => <li key={e}>{e}</li>)}</ul></section>
-          <section><h3 className="font-bold mb-2">Glossary</h3><dl className="grid grid-cols-[auto_1fr] gap-x-4 text-[var(--mute)]">{g.glossary.map(([t, m], i) => <Fragment key={`${t}-${i}`}><dt className="font-bold text-[var(--gold)]">{t}</dt><dd>{m}</dd></Fragment>)}</dl></section>
-          {g.play && <button className="btn btn-gold" onClick={() => go(g.play!)}>Launch Interactive Game</button>}
+          <section>
+            <h3 className="font-bold mb-2">{t('rules_of_play')}</h3>
+            <ol className="list-decimal pl-5 space-y-1 text-[var(--mute)]">
+              {g.rules.map((r, i) => <li key={i}>{r}</li>)}
+            </ol>
+          </section>
+          <section>
+            <h3 className="font-bold mb-2">{t('history_tradition')}</h3>
+            <p className="text-[var(--mute)]">{g.history}</p>
+          </section>
+          <section>
+            <h3 className="font-bold mb-2">{t('equipment')}</h3>
+            <ul className="list-disc pl-5 text-[var(--mute)]">
+              {g.equipment.map(e => <li key={e}>{e}</li>)}
+            </ul>
+          </section>
+          <section>
+            <h3 className="font-bold mb-2">{t('glossary')}</h3>
+            <dl className="grid grid-cols-[auto_1fr] gap-x-4 text-[var(--mute)]">
+              {g.glossary.map(([term, meaning], i) => (
+                <Fragment key={`${term}-${i}`}>
+                  <dt className="font-bold text-[var(--gold)]">{term}</dt>
+                  <dd>{meaning}</dd>
+                </Fragment>
+              ))}
+            </dl>
+          </section>
+          {rawGame.play && (
+            <button className="btn btn-gold" onClick={() => go(rawGame.play!)}>
+              {t('launch_game')}
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -32,29 +70,65 @@ function Modal({ g, img, onClose }: { g: Game; img: string; onClose: () => void 
 
 export default function Games() {
   const { assets } = useAssetsCtx();
-  const [cat, setCat] = useState(CATS[0]);
+  const { t, lang } = useLang();
+  const [cat, setCat] = useState('All Games');
   const [q, setQ] = useState('');
   const [open, setOpen] = useState<Game | null>(null);
-  const list = GAMES.filter(g => (cat === CATS[0] || g.category === cat) && [g.name, g.origin, g.summary, ...g.rules].join(' ').toLowerCase().includes(q.toLowerCase()));
+
+  const list = GAMES.map(g => ({
+    raw: g,
+    loc: getLocalizedGame(g, lang),
+  })).filter(({ raw, loc }) => {
+    const catMatch = cat === 'All Games' || raw.category === cat;
+    const searchable = [
+      raw.name, raw.origin, raw.summary, ...raw.rules,
+      loc.name, loc.origin, loc.summary, ...loc.rules, loc.category
+    ].join(' ').toLowerCase();
+    return catMatch && searchable.includes(q.toLowerCase());
+  });
+
   const img = (g: Game) => assets.games[g.id] || art(...g.colors);
+
   return (
     <div className="max-w-5xl mx-auto px-5 py-10">
-      <h1 className="font-display text-4xl mb-6">Games Sanctuary</h1>
-      <div className="flex flex-wrap gap-2 mb-4">{CATS.map(c => <button key={c} className="pill" aria-pressed={cat === c} onClick={() => setCat(c)}>{c}</button>)}</div>
-      <input className="field mb-8" placeholder="Search by game name, origin or rules" value={q} onChange={e => setQ(e.target.value)} aria-label="Search games" />
-      {list.length === 0 && <p className="text-[var(--mute)]">No games match. Clear the search or pick another category.</p>}
+      <h1 className="font-display text-4xl mb-6">{t('games_title')}</h1>
+      <div className="flex flex-wrap gap-2 mb-4">
+        {CAT_KEYS.map(c => (
+          <button
+            key={c.id}
+            className="pill"
+            aria-pressed={cat === c.id}
+            onClick={() => setCat(c.id)}
+          >
+            {t(c.key)}
+          </button>
+        ))}
+      </div>
+      <input
+        className="field mb-8"
+        placeholder={t('search_placeholder')}
+        value={q}
+        onChange={e => setQ(e.target.value)}
+        aria-label={t('search_placeholder')}
+      />
+      {list.length === 0 && <p className="text-[var(--mute)]">{t('no_games_match')}</p>}
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {list.map(g => (
-          <button key={g.id} onClick={() => setOpen(g)} className="glass rounded-3xl overflow-hidden text-left">
-            <img src={img(g)} alt={g.name} className="h-40 w-full object-cover sepia" />
+        {list.map(({ raw, loc }) => (
+          <button key={raw.id} onClick={() => setOpen(raw)} className="glass rounded-3xl overflow-hidden text-left transition hover:scale-[1.01]">
+            <img src={img(raw)} alt={loc.name} className="h-40 w-full object-cover sepia" />
             <div className="p-4">
-              <div className="flex gap-2 text-xs mb-2"><span className="pill">{g.category}</span><span className="pill">{g.players}</span><span className="pill">{g.level}</span></div>
-              <h3 className="font-display text-xl">{g.name}</h3><p className="text-sm text-[var(--mute)] mt-1">{g.summary}</p>
+              <div className="flex flex-wrap gap-1.5 text-xs mb-2">
+                <span className="pill">{loc.category}</span>
+                <span className="pill">{loc.players}</span>
+                <span className="pill">{loc.level}</span>
+              </div>
+              <h3 className="font-display text-xl">{loc.name}</h3>
+              <p className="text-sm text-[var(--mute)] mt-1">{loc.summary}</p>
             </div>
           </button>
         ))}
       </div>
-      {open && <Modal g={open} img={img(open)} onClose={() => setOpen(null)} />}
+      {open && <Modal rawGame={open} img={img(open)} onClose={() => setOpen(null)} />}
     </div>
   );
 }
