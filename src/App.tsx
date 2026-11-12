@@ -68,12 +68,14 @@ function Home() {
           <span className="glass inline-block rounded-full px-4 py-1.5 text-sm mb-5 shadow-md">
             {t('hero_badge')}
           </span>
-          <h1 className="font-display text-4xl sm:text-6xl leading-[1.05] max-w-3xl drop-shadow-lg">
+          <h1 className="font-display text-4xl sm:text-6xl leading-[1.05] max-w-3xl drop-shadow-md text-[var(--ink)]">
             {t('hero_title')}
           </h1>
-          <p className="mt-5 max-w-xl text-[var(--mute)] drop-shadow">
-            {t('hero_desc')}
-          </p>
+          <div className="mt-6 max-w-xl glass rounded-2xl p-4 sm:p-5 shadow-lg border border-[var(--glass-edge)]">
+            <p className="text-base sm:text-lg leading-relaxed text-[var(--ink)] font-normal">
+              {t('hero_desc')}
+            </p>
+          </div>
           <div className="mt-8 flex flex-wrap gap-3">
             <button className="btn btn-gold shadow-md" onClick={() => go('/games')}>
               {t('btn_games')}
