@@ -11,6 +11,7 @@ import Admin from './Admin';
 import Ampe from './games/Ampe';
 import Pilolo from './games/Pilolo';
 import Chaskele from './games/Chaskele';
+import { ContentProvider } from './contentContext';
 
 const THEMES = [
   ['dark', 'Dark Heritage', Moon],
@@ -161,29 +162,31 @@ function AppContent() {
         </div>
       </header>
 
-      <main className="pb-28 md:pb-10 min-h-[80vh]">{page}</main>
+      <main className={`min-h-[80vh] ${route === '/' ? 'pb-10' : 'pb-28 md:pb-10'}`}>{page}</main>
 
-      <footer className="text-center text-sm text-[var(--mute)] pb-24 md:pb-8 flex items-center justify-center gap-3">
+      <footer className={`text-center text-sm text-[var(--mute)] ${route === '/' ? 'pb-8' : 'pb-24 md:pb-8'} flex items-center justify-center gap-3`}>
         <span>{t('footer_text')}</span>
         <button onClick={() => go('/admin')} aria-label="Curator console" className="p-2">
           <Lock size={14} />
         </button>
       </footer>
 
-      {/* Mobile Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-3 inset-x-3 z-40 glass rounded-3xl grid grid-cols-4">
-        {NAV.map(([p, transKey, I]) => (
-          <button
-            key={p}
-            onClick={() => go(p)}
-            className="py-3 flex flex-col items-center text-xs gap-1 min-h-[56px]"
-            style={route === p ? { color: 'var(--gold)' } : {}}
-          >
-            <I size={20} />
-            {t(transKey)}
-          </button>
-        ))}
-      </nav>
+      {/* Mobile Bottom Navigation - hidden on home screen only */}
+      {route !== '/' && (
+        <nav className="md:hidden fixed bottom-3 inset-x-3 z-40 glass rounded-3xl grid grid-cols-4">
+          {NAV.map(([p, transKey, I]) => (
+            <button
+              key={p}
+              onClick={() => go(p)}
+              className="py-3 flex flex-col items-center text-xs gap-1 min-h-[56px]"
+              style={route === p ? { color: 'var(--gold)' } : {}}
+            >
+              <I size={20} />
+              {t(transKey)}
+            </button>
+          ))}
+        </nav>
+      )}
 
       {loading && (
         <div
@@ -200,7 +203,9 @@ function AppContent() {
 export default function App() {
   return (
     <LangProvider>
-      <AppContent />
+      <ContentProvider>
+        <AppContent />
+      </ContentProvider>
     </LangProvider>
   );
 }

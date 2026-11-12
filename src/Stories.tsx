@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
-import { STORIES, Story, art } from './data';
+import { Story, art } from './data';
 import { useAssetsCtx } from './hooks';
 import { useLang } from './i18n';
 import { getLocalizedStory } from './storiesI18n';
+import { useContent } from './contentContext';
 
 export default function Stories() {
   const { assets } = useAssetsCtx();
+  const { stories } = useContent();
   const { t, lang } = useLang();
   const [open, setOpen] = useState<Story | null>(null);
   const img = (s: Story) => assets.stories[s.id] || art(...s.colors);
@@ -18,7 +20,7 @@ export default function Stories() {
       <h1 className="font-display text-4xl mb-2">{t('stories_title')}</h1>
       <p className="text-[var(--mute)] mb-8">{t('stories_subtitle')}</p>
       <div className="grid gap-5 md:grid-cols-3">
-        {STORIES.map(s => {
+        {stories.map(s => {
           const loc = getLocalizedStory(s, lang);
           return (
             <button key={s.id} onClick={() => setOpen(s)} className="glass rounded-3xl overflow-hidden text-left transition hover:scale-[1.01]">

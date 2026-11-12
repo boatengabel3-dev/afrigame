@@ -1,8 +1,9 @@
 import { useState, Fragment } from 'react';
 import { X } from 'lucide-react';
-import { GAMES, Game, art, getLocalizedGame } from './data';
+import { Game, art, getLocalizedGame } from './data';
 import { go, useAssetsCtx } from './hooks';
 import { useLang } from './i18n';
+import { useContent } from './contentContext';
 
 const CAT_KEYS = [
   { id: 'All Games', key: 'cat_all' },
@@ -70,12 +71,13 @@ function Modal({ rawGame, img, onClose }: { rawGame: Game; img: string; onClose:
 
 export default function Games() {
   const { assets } = useAssetsCtx();
+  const { games } = useContent();
   const { t, lang } = useLang();
   const [cat, setCat] = useState('All Games');
   const [q, setQ] = useState('');
   const [open, setOpen] = useState<Game | null>(null);
 
-  const list = GAMES.map(g => ({
+  const list = games.map(g => ({
     raw: g,
     loc: getLocalizedGame(g, lang),
   })).filter(({ raw, loc }) => {
