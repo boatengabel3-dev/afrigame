@@ -36,10 +36,10 @@ export const TRANSLATIONS: Record<string, Record<Language, string>> = {
     ha: '🇬🇭 Barka da Zuwa · Wasannin Gargajiya na Ghana',
   },
   hero_title: {
-    en: 'Play Ghana’s Soul. Ancient Rules. Living Courtyards.',
-    tw: 'Bɔ Ghana Kra Agorɔ. Tete Mmara. Adanmudeɛ A ɛte ase.',
-    ga: 'Fee Ghana Mɔbale Nyamɔ. Blema Mlai. Shia Kpoyei ni hiɛ kã.',
-    ha: 'Ruhin Wasannin Ghana. Tsoffin Dokoki. Tsakar Gida Masu Rai.',
+    en: 'Experience Ghana’s Living Heritage. Timeless Games. Ancient Courtyards.',
+    tw: 'Hunu Ghana Amammerɛ A Ɛte Ase. Tete Agorɔ. Adanmudeɛ Kronkron.',
+    ga: 'Naa Ghana Kusumi Ni Hiɛ Kã. Blema Nyamɔi. Shia Kpoyei Kpeteŋkpele.',
+    ha: 'Gano Gadon Ghana Mai Rai. Tsoffin Wasanni. Tsakar Gida Masu Albarka.',
   },
   hero_desc: {
     en: 'A living archive of Oware, Ampe, Pilolo, Chaskele, Dame and Ludo, with games you can play, stories you can read and an elder you can ask.',
@@ -48,7 +48,7 @@ export const TRANSLATIONS: Record<string, Record<Language, string>> = {
     ha: 'Rumbun adana Oware, Ampe, Pilolo, Chaskele, Dame da Ludo, tare da wasannin da zaka iya yi, labarai da dattijo mai amsa kowace tambaya.',
   },
   btn_games: { en: 'Explore Games Sanctuary', tw: 'Kɔ Agorɔ Bea No Mu', ga: 'Yaa Nyamɔ He Lɛ Mli', ha: 'Bincika Wasanni' },
-  btn_stories: { en: 'Listen to Heritage Stories', tw: 'Tie Tete Anansesɛm', ga: 'Bo Blema Adesai Toi', ha: 'Saurari Labaran Gargajiya' },
+  btn_stories: { en: 'Heritage Stories', tw: 'Tete Anansesɛm', ga: 'Blema Adesai', ha: 'Labaran Gargajiya' },
   btn_elder: { en: 'Consult Nana Kwame (AI)', tw: 'Bisa Nana Kwame (AI)', ga: 'Bi Nuumo Kwame (AI)', ha: 'Tambayi Dattijo Kwame (AI)' },
 
   // Games Screen

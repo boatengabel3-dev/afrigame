@@ -878,7 +878,6 @@ export default function Admin() {
         <input
           className="field"
           type="password"
-          placeholder="Passcode (Default: 12341234)"
           value={code}
           onChange={e => setCode(e.target.value)}
           onKeyDown={e => {

@@ -21,6 +21,26 @@
   --orb3: rgba(211, 84, 0, 0.22);
 }
 
+[data-theme='very-dark'] {
+  --bg: #000000;
+  --bg2: rgba(255, 255, 255, 0.04);
+  --bg3: rgba(255, 255, 255, 0.08);
+  --gold: #F5A623;
+  --brass: #FBD38D;
+  --ink: #FFFFFF;
+  --mute: #A09689;
+  --leaf: #2ECC71;
+  --glass-a: rgba(14, 12, 10, 0.88);
+  --glass-b: rgba(5, 5, 5, 0.96);
+  --glass-edge: rgba(245, 166, 35, 0.26);
+  --glass-hi: rgba(255, 255, 255, 0.12);
+  --glass-shadow: rgba(0, 0, 0, 0.95);
+  --line: rgba(245, 166, 35, 0.2);
+  --orb1: rgba(245, 166, 35, 0.16);
+  --orb2: rgba(46, 204, 113, 0.12);
+  --orb3: rgba(211, 84, 0, 0.12);
+}
+
 [data-theme='ivory'] {
   --bg: #F7F3EA;
   --bg2: rgba(0, 0, 0, 0.035);
@@ -275,21 +295,24 @@ button.glass:hover, a.glass:hover {
   transition: opacity 0.45s ease, filter 0.45s ease;
 }
 
+[data-theme='very-dark'] .hero-image {
+  opacity: 0.85;
+  filter: contrast(1.1) brightness(0.92);
+}
+
 [data-theme='dark'] .hero-image {
-  opacity: 0.65;
-  filter: sepia(0.35) contrast(1.1) brightness(0.85);
+  opacity: 0.85;
+  filter: contrast(1.08) brightness(0.95);
 }
 
 [data-theme='ivory'] .hero-image {
-  opacity: 0.45;
-  filter: sepia(0.5) saturate(1.15) contrast(1.05) brightness(1.03);
-  mix-blend-mode: multiply;
+  opacity: 0.78;
+  filter: contrast(1.05) brightness(1.02);
 }
 
 [data-theme='kente'] .hero-image {
-  opacity: 0.62;
-  filter: sepia(0.4) saturate(1.4) contrast(1.18) brightness(0.88);
-  mix-blend-mode: luminosity;
+  opacity: 0.85;
+  filter: contrast(1.15) brightness(0.92);
 }
 
 @media (prefers-reduced-motion: reduce) {

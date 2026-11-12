@@ -14,6 +14,7 @@ import Chaskele from './games/Chaskele';
 import { ContentProvider } from './contentContext';
 
 const THEMES = [
+  ['very-dark', 'Very Dark', Moon],
   ['dark', 'Dark Heritage', Moon],
   ['ivory', 'Ivory Sun', Sun],
   ['kente', 'Royal Kente', Palette],
@@ -42,45 +43,45 @@ function Home() {
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              'radial-gradient(ellipse 60% 50% at 80% 25%, color-mix(in srgb, var(--orb1) 40%, transparent) 0%, transparent 70%), radial-gradient(ellipse 55% 45% at 20% 75%, color-mix(in srgb, var(--orb2) 35%, transparent) 0%, transparent 70%)',
+              'radial-gradient(ellipse 60% 50% at 80% 25%, color-mix(in srgb, var(--orb1) 25%, transparent) 0%, transparent 70%), radial-gradient(ellipse 55% 45% at 20% 75%, color-mix(in srgb, var(--orb2) 20%, transparent) 0%, transparent 70%)',
           }}
         />
 
-        {/* Unified radial & vertical gradient overlay that blends seamlessly into var(--bg) */}
+        {/* Soft atmospheric gradient overlay that keeps the background image quite visible while ensuring contrast */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              'radial-gradient(ellipse 85% 75% at 50% 30%, transparent 20%, color-mix(in srgb, var(--bg) 60%, transparent) 65%, var(--bg) 100%), linear-gradient(to bottom, color-mix(in srgb, var(--bg) 20%, transparent) 0%, color-mix(in srgb, var(--bg) 50%, transparent) 55%, var(--bg) 100%)',
+              'linear-gradient(to bottom, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.38) 60%, var(--bg) 100%)',
           }}
         />
 
         {/* Smooth bottom gradient fade to guarantee seamless transition to games section */}
         <div
-          className="absolute inset-x-0 bottom-0 h-36 pointer-events-none"
+          className="absolute inset-x-0 bottom-0 h-28 pointer-events-none"
           style={{
             background: 'linear-gradient(to bottom, transparent, var(--bg))',
           }}
         />
 
         <div className="relative max-w-5xl mx-auto px-5 pb-20 pt-32 w-full">
-          <span className="glass inline-block rounded-full px-4 py-1.5 text-sm mb-5">
+          <span className="glass inline-block rounded-full px-4 py-1.5 text-sm mb-5 shadow-md">
             {t('hero_badge')}
           </span>
-          <h1 className="font-display text-4xl sm:text-6xl leading-[1.05] max-w-3xl">
+          <h1 className="font-display text-4xl sm:text-6xl leading-[1.05] max-w-3xl drop-shadow-lg">
             {t('hero_title')}
           </h1>
-          <p className="mt-5 max-w-xl text-[var(--mute)]">
+          <p className="mt-5 max-w-xl text-[var(--mute)] drop-shadow">
             {t('hero_desc')}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <button className="btn btn-gold" onClick={() => go('/games')}>
+            <button className="btn btn-gold shadow-md" onClick={() => go('/games')}>
               {t('btn_games')}
             </button>
-            <button className="btn glass" onClick={() => go('/stories')}>
+            <button className="btn glass shadow-md" onClick={() => go('/stories')}>
               {t('btn_stories')}
             </button>
-            <button className="btn glass" onClick={() => go('/elder')}>
+            <button className="btn glass shadow-md" onClick={() => go('/elder')}>
               {t('btn_elder')}
             </button>
           </div>
@@ -94,7 +95,7 @@ function AppContent() {
   const route = useRoute();
   const a = useAssets();
   const { t } = useLang();
-  const [theme, setTheme] = useState(() => localStorage.getItem('gg-theme') || 'dark');
+  const [theme, setTheme] = useState(() => localStorage.getItem('gg-theme') || 'very-dark');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -110,7 +111,7 @@ function AppContent() {
   }, [route]);
 
   const [, label, Icon] = THEMES.find(th => th[0] === theme) || THEMES[0];
-  const next = () => setTheme(THEMES[(THEMES.findIndex(th => th[0] === theme) + 1) % 3][0]);
+  const next = () => setTheme(THEMES[(THEMES.findIndex(th => th[0] === theme) + 1) % THEMES.length][0]);
 
   let page = <Home />;
   if (route === '/games') page = <Games />;
@@ -120,6 +121,8 @@ function AppContent() {
   else if (route === '/play-ampe') page = <Ampe />;
   else if (route === '/play-pilolo') page = <Pilolo />;
   else if (route === '/play-chaskele') page = <Chaskele />;
+
+  const isHome = !['/games', '/stories', '/elder', '/admin', '/play-ampe', '/play-pilolo', '/play-chaskele'].includes(route);
 
   return (
     <AssetsCtx.Provider value={a}>
@@ -162,17 +165,17 @@ function AppContent() {
         </div>
       </header>
 
-      <main className={`min-h-[80vh] ${route === '/' ? 'pb-10' : 'pb-28 md:pb-10'}`}>{page}</main>
+      <main className={`min-h-[80vh] ${isHome ? 'pb-10' : 'pb-28 md:pb-10'}`}>{page}</main>
 
-      <footer className={`text-center text-sm text-[var(--mute)] ${route === '/' ? 'pb-8' : 'pb-24 md:pb-8'} flex items-center justify-center gap-3`}>
+      <footer className={`text-center text-sm text-[var(--mute)] ${isHome ? 'pb-8' : 'pb-24 md:pb-8'} flex items-center justify-center gap-3`}>
         <span>{t('footer_text')}</span>
         <button onClick={() => go('/admin')} aria-label="Curator console" className="p-2">
           <Lock size={14} />
         </button>
       </footer>
 
-      {/* Mobile Bottom Navigation - hidden on home screen only */}
-      {route !== '/' && (
+      {/* Mobile Bottom Navigation - strictly hidden on home screen only */}
+      {!isHome && (
         <nav className="md:hidden fixed bottom-3 inset-x-3 z-40 glass rounded-3xl grid grid-cols-4">
           {NAV.map(([p, transKey, I]) => (
             <button
